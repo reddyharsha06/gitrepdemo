@@ -1,0 +1,310 @@
+
+
+1.  Discussion SBT (Simple Build Tool)
+
+a) Repository (artifactory)
+
+cache (will download per user on per machine )
+groupid , artifactid and version
+
+intranet(Local) 
+remote 
+
+build structure :- 
+
+|----src 
+	  |----main
+	  |		 |----scala  // where you source code goes 
+	  			   |----.scala files (source files )
+	  		 |----resources  // where your resource file .xml .properties .conf . files which are other than scala and classes 
+	  		 		|---log4j.properties  (//loggger configuration)
+	  |----test
+	  		 |--- scala
+	  		 		|---mytest1.scala 
+	  		 			mytest2.scala 
+	  		 			mytestn.scala 
+	  		 |----resources		
+	  		 		|--- test.properties
+|---- build.sbt 
+		 |--- groupid 
+		 |--- artificat id 
+		 |--- versionid 
+		 |--- classpath description  (Dependency resolution)==>Repository ===> fetch that from the given repositories 
+|----build section 
+		target ---> 
+
+
+
+A build tool like sbt allows you to build your application with a lifecyle , dependency mapping , configuration settings , central repository management , 
+build artifact based generation (jar) , doc , test cases and reports for the same 
+
+
+
+build this application ---> 
+1. it first checks the build.sbt file -
+2. it scans the dependency section --> 
+3. has local cache lookup if cache does not exist 
+4. it goes to you intranet repo (If one exist) (nexus)
+5. it goes to the internet if the nexus does not find it and then 
+6. downloads back in to your local cache 
+7. once it downloads in your local cache it also registers in your classpath so that scala can start taking advantages of these classes 
+
+
+2.  Discussion Maven 
+The difference between sbt and maven in overall sense is  build.sbt   v/s pom.xml 
+in maven the configuration is held in the pom.xml 
+
+
+
+
+|----src 
+	  |----main
+	  |		 |----scala  // where you source code goes 
+	  			   |----.scala files (source files )
+	  		 |----resources  // where your resource file .xml .properties .conf . files which are other than scala and classes 
+	  		 		|---log4j.properties  (//loggger configuration)
+	  |----test
+	  		 |--- scala
+	  		 		|---mytest1.scala 
+	  		 			mytest2.scala 
+	  		 			mytestn.scala 
+	  		 |----resources		
+	  		 		|--- test.properties
+|---- pom.xml
+		 |--- groupid 
+		 |--- artifict id 
+		 |--- versionid 
+		 |--- classpath description  (Dependency resolution)==>Repository ===> fetch that from the given repositories 
+|----build section 
+		target ---> 
+
+
+Archetypes -==> i have archetype --> template --> is basically the first time configuration adn setup which can be used as scala template for maven project 
+
+
+
+Step 1 : Start you Intelli-j
+
+Step 2 : Create a new Project 
+
+Step 3  :  Project of type maven 
+
+Step 4  : select of check for the archetype 
+
+step 5   : was to add the alchim31 support archetype 
+
+step 6 : select the archetype and provide your groupid and artifacti id and version 
+
+
+step 7 :  select enable auto import 
+
+
+step 8 :  is to open the src -> folder and verify the stcutrue 
+			main 
+			  |-scala 
+			  |-resources
+			test 
+			  |-scala 
+			  |-resources
+
+
+step 9 :  is to open the Terminal --. 
+
+step 10 : to check if the mvn -v  /// if yes 
+
+step 11 :  mvn  clean  // clean your project for any previoulsy compiled  clases 
+
+step 12  :  mvn compile 
+
+step 13  : mvn package 
+
+step 14 :  mvn install 
+
+
+
+//// for an existing 
+if i would have checkin this project into git 
+
+Stepe you would hve got the url of the project from the git 
+
+
+
+
+
+Step 1 :  you created a project (how)
+
+a) either scala sbt 
+	build.sbt
+b) either scala maven
+	pom.xml
+
+src
+ |-main
+    | -scala 
+    	 |-cg
+    	 	|-samples 
+    	 		|-App.scala
+ test
+   |-scala 
+   	   |-cg
+   	   	  |-test
+   	   	  	 |-test.scala
+
+
+sbt > build 
+mvn package 
+
+-----> 
+step 1 it compiled all you files 
+step 2 it generated a .class for every scall class you have 
+step 3 it bundled it in a single zip file (the extension stands out to be a jar ) (java archive)
+step 4 i put jar in the class by using the SET CLASSPATH=<thatjarfile_fqn>
+step 5 scala  cg.samples.App -=> 
+this thing invoked the scala --> which inturn invoked ---> the search in the classpath --> in jar if there is a package that is with cg.samples.App 
+
+
+
+Once your build is successful you will need to do the following to test whether the build is done successfuly or not 
+
+// to be executed in a cmd prompt on the lab machine 
+SET CLASSPATH=C:\Users\niles\IdeaProjects\myapp2\target\myapp2-1.0-SNAPSHOT.jar
+
+/// 
+scala cg.examples.App
+
+you should get the outout 
+
+
+
+
+if you are the first person to start the project then archetype is good idea 
+
+but if you are not the first person to start the project then you can simply clone someone repo and continue working in it 
+
+sbt/gradle/maven --> any of these would not matter because finally its just a folder structure with build.sbt or  pom.xml
+
+
+how to push my project to git : 
+
+
+you need to be in the root directory of your project : 
+
+1.  git init    // this will initialize the  local repo for git in your project 
+2.  git add   *   // this will add all the files to version system so that they will move to the staging (mark for commit)
+3.  git commit -m "Message you want  to display when commited short note to know what was done last on this code "
+4.  create new repository in the remote git server where you wish to put the code in the central repo 
+5.  git remote add origin https://github.com/nileshdevdas/gitrepdemo.git  
+			(origin just a name where you want the code origin and the url )
+
+6.  git push -u origin master // this will push all the comitted code to the remote repository 
+
+7.  if now someone wishes to use your scala code ---> 
+		git clone https://github.com/nileshdevdas/gitrepdemo.git  / this is what someone will do to create the copy of your project 
+																	in his local 
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Scala dependency management : 
+
+e.g. we will try to add a dependency // another project or any dependant application on which your application depends 
+one such public dependency iam going to take is log4j 
+
+1. how to set up dependencies ---> are maven project/sbt projects which finally have got converted to jar and published by someont to the repo 
+
+2. decide what dependency you want to use 
+    you should know the GAV (Groupid / Artifactid / Version of the dependency that you wish to use )
+
+3. our dependency that we want to use (Logger) (Log4j)
+
+	open the chrome search for log4j maven --> log4j 1.2.17 
+
+4. <!-- https://mvnrepository.com/artifact/log4j/log4j -->
+<dependency>
+    <groupId>log4j</groupId>
+    <artifactId>log4j</artifactId>
+    <version>1.2.17</version>
+</dependency>
+copied the dependecy section because i was using maven 
+
+5. pom.xml/build.sbt 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3.  How we would write programs that would make a real world package 
